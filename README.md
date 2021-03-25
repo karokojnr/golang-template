@@ -34,3 +34,6 @@ This is a golang server template. It uses Gin, GORM and PostreSQL.
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+[MIT](./LICENSE)
