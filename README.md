@@ -14,7 +14,7 @@ This is a golang server template. It uses Gin, GORM and PostreSQL.
 
    ```
 
-2. Install NPM packages
+2. Install go packages
 
    ```sh
 
