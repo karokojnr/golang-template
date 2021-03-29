@@ -13,6 +13,7 @@ services:
       DB_NAME: postgres
       DB_USER: cars
       DB_PASSWORD: karokojnr
+      POSTGRES_PASSWORD: karokojnr
     volumes:
       - database_data:/var/lib/postgresql/data
   web:
