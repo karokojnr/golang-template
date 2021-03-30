@@ -13,7 +13,7 @@ COPY go.mod .
 COPY go.sum .
 RUN go mod download
 
-#COPY the code into the cointainer
+#COPY the code into the container
 COPY . .
 
 #Build the application

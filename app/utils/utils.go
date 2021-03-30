@@ -7,6 +7,8 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
+	uuid "github.com/satori/go.uuid"
+	"golang-template/app/utils/database"
 	"log"
 	"net/http"
 	"os"
@@ -15,6 +17,7 @@ import (
 	"strings"
 	"time"
 )
+
 
 func CurrentTime() string {
 	return time.Now().Format("2006-01-02 15:04:05")
@@ -63,14 +66,25 @@ func ExitApp(code int) {
 	os.Exit(code)
 }
 
-func CreateToken(userId uint32) (string, error) {
+func CreateToken(userId uint32)  (string, error) {
 	claims := jwt.MapClaims{}
+	accessUUID := uuid.NewV4().String()
 	claims["authorized"] = true
 	claims["user_id"] = userId
+	atExpires := time.Now().Add(time.Hour * 1)
 	claims["exp"] = time.Now().Add(time.Hour * 1).Unix() //Token expires after 1 hour
+	now := time.Now()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(os.Getenv("API_SECRET")))
 
+	//----------------------------------------------------------------------------------------------
+	//Store token on redis
+	err := database.GetRedis().Set(accessUUID, strconv.Itoa(int(userId)), atExpires.Sub(now)).Err()
+	if err != nil {
+		return "",err
+	}
+	//----------------------------------------------------------------------------------------------
+
+	return token.SignedString([]byte(os.Getenv("API_SECRET")))
 }
 
 func TokenValid(r *http.Request) error {
@@ -135,4 +149,23 @@ func Pretty(data interface{}) {
 	}
 
 	fmt.Println(string(b))
+}
+
+//FetchAuth ...
+func  FetchAuth() (int64, error) {
+	userid, err := database.GetRedis().Get("example_uuid").Result()
+	if err != nil {
+		return 0, err
+	}
+	userID, _ := strconv.ParseInt(userid, 10, 64)
+	return userID, nil
+}
+
+//DeleteAuth ...
+func  DeleteAuth(givenUUID string) (int64, error) {
+	deleted, err := database.GetRedis().Del(givenUUID).Result()
+	if err != nil {
+		return 0, err
+	}
+	return deleted, nil
 }

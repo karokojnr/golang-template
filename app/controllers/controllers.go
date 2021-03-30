@@ -1,11 +1,38 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang-template/app/models"
+	"golang-template/app/utils"
+	"golang.org/x/crypto/bcrypt"
 	"net/http"
 )
 
+func (app *App) Login(c *gin.Context) {
+	var user models.User
+	if err := app.DB.Where("email = ?", c.Param("email")).First(&user).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Email not found!"})
+		return
+	}
+	//Compare the password form and database if match
+	bytePassword := []byte(user.Password)
+	byteHashedPassword := []byte(user.Password)
+
+	err := bcrypt.CompareHashAndPassword(byteHashedPassword, bytePassword)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Password"})
+
+	}
+	//Generate the JWT auth token
+	token,err := utils.CreateToken(uint32(user.ID))
+	fmt.Println(token)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Cannot create token"})
+
+	}
+	return
+}
 func (app *App) GetIndex(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status":  200,

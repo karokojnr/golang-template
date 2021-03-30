@@ -20,7 +20,10 @@ func init() {
 	}
 	app.DB = db
 	database.AutoMigrateDB(app.DB)
+	//Init redis
+	database.InitRedis("1")
 }
+
 
 func Run() {
 	r := gin.Default()
