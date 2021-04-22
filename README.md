@@ -29,6 +29,16 @@ This is a golang server template. It uses Gin, GORM and PostreSQL.
    go run main.go
 
    ```
+## Tip
+Creating new project:
+   ```sh
+   mkdir <name of project>
+   
+   cd <name of project>
+   
+   go mod init <name of project>
+   ```
+
 
 
 ## Contributing
