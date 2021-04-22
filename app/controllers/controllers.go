@@ -73,7 +73,7 @@ func (app *App) UpdateCar(c *gin.Context) {
 	app.DB.Model(&car).Updates(updateCar)
 	c.JSON(http.StatusOK, gin.H{"car": car})
 }
-func (app *App) DeleteBook(c *gin.Context) {
+func (app *App) DeleteCar(c *gin.Context) {
 	// Get model if exist
 	var car models.Car
 	if err := app.DB.Where("id = ?", c.Param("id")).First(&car).Error; err != nil {

@@ -40,7 +40,7 @@ func Run() {
 	r.POST("/cars", app.CreateCar)
 	r.GET("/cars/:id", app.FindCar)
 	r.PATCH("/cars/:id", app.UpdateCar)
-	r.DELETE("/cars/:id", app.DeleteBook)
+	r.DELETE("/cars/:id", app.DeleteCar)
 	r.NoRoute(app.NotFound)
 
 	port := utils.GetPort()
